@@ -35,6 +35,11 @@ import static com.zhangqi.usercenter.constant.UserConstant.USER_LOGIN_STATE;
  */
 @RestController
 @RequestMapping("/user")
+
+/**
+ * 跨域注解
+  */
+//@CrossOrigin(origins = {"http://user.zhangqi.cloud"},allowCredentials = "true", methods={ RequestMethod.POST, RequestMethod.GET, RequestMethod.GET })
 public class UserController {
 
     @Resource
