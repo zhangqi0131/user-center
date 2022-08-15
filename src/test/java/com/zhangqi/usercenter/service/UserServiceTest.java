@@ -1,11 +1,15 @@
 package com.zhangqi.usercenter.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import com.zhangqi.usercenter.model.domain.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 
@@ -49,7 +53,6 @@ class UserServiceTest {
         //userService.userRegister(userAccount, password, checkPassword);
 
 
-
         //long result =  userService.userRegister("zhangqiqi", "123456789", "123456789");
         //System.out.println(result);
         //Assertions.assertEquals(-1, result);
@@ -77,5 +80,15 @@ class UserServiceTest {
         //userAccount = "zhangqi";
         //result = userService.userRegister(userAccount, password, checkPassword);
         //Assertions.assertTrue(result > 0);
+    }
+
+    @Test
+    void searchUserByTags() {
+
+        List<String> tagNameList = Arrays.asList("Java", "python", "css");
+
+        List<User> users = userService.searchUserByTags(tagNameList);
+        assertNotNull(users);
+
     }
 }
