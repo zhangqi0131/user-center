@@ -11,6 +11,7 @@ import com.zhangqi.usercenter.model.domain.request.UserRegisterRequest;
 import com.zhangqi.usercenter.service.UserService;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -31,6 +32,7 @@ import static com.zhangqi.usercenter.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
  * 用户接口
+ *
  * @author zhangqi
  */
 @RestController
@@ -38,8 +40,9 @@ import static com.zhangqi.usercenter.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
  * 跨域注解
-  */
+ */
 //@CrossOrigin(origins = {"http://user.zhangqi.cloud"},allowCredentials = "true", methods={ RequestMethod.POST, RequestMethod.GET, RequestMethod.GET })
+@CrossOrigin(origins = {"http://localhost:5173"})
 public class UserController {
 
     @Resource
@@ -117,12 +120,23 @@ public class UserController {
             queryWrapper.like("userName", userName);
         }
         List<User> userList = userService.list(queryWrapper);
-        List<User> list =  userList.stream().map(user -> userService.getSafetyUser(user)).collect(Collectors.toList());
+        List<User> list = userList.stream().map(user -> userService.getSafetyUser(user)).collect(Collectors.toList());
         return ResultUtils.success(list);
+    }
+
+    @GetMapping("/search/tags")
+    public BaseResponse<List<User>> searchUsersByTags(@RequestParam(required = false) List<String> tagNameList) {
+        if (CollectionUtils.isEmpty(tagNameList)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        List<User> userList = userService.searchUserByTags(tagNameList);
+        return ResultUtils.success(userList);
+
     }
 
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteUser(@RequestBody long id, HttpServletRequest request) {
+
         // 仅管理员可查询
         if (!isAdmin(request)) {
             throw new BusinessException(ErrorCode.NO_AUTH);
