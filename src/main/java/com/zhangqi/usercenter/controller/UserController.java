@@ -110,7 +110,7 @@ public class UserController {
     @GetMapping("/search")
     public BaseResponse<List<User>> searchUsers(String userName, HttpServletRequest request) {
         // 仅管理员可查询
-        if (!isAdmin(request)) {
+        if (!userService.isAdmin(request)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
@@ -119,6 +119,14 @@ public class UserController {
         if (StringUtils.isNotBlank(userName)) {
             queryWrapper.like("userName", userName);
         }
+        List<User> userList = userService.list(queryWrapper);
+        List<User> list = userList.stream().map(user -> userService.getSafetyUser(user)).collect(Collectors.toList());
+        return ResultUtils.success(list);
+    }
+
+    @GetMapping("/recommend")
+    public BaseResponse<List<User>> recommendUsers(String userName, HttpServletRequest request) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         List<User> userList = userService.list(queryWrapper);
         List<User> list = userList.stream().map(user -> userService.getSafetyUser(user)).collect(Collectors.toList());
         return ResultUtils.success(list);
@@ -134,11 +142,25 @@ public class UserController {
 
     }
 
+    @PostMapping("/update")
+    public BaseResponse<Integer> updateUser(@RequestBody User user, HttpServletRequest request) {
+        // 校验参数是否为空
+        if (user == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+        // 实现更新
+        int result = userService.updateUser(user, loginUser);
+        return ResultUtils.success(result);
+
+    }
+
     @PostMapping("/delete")
+
     public BaseResponse<Boolean> deleteUser(@RequestBody long id, HttpServletRequest request) {
 
         // 仅管理员可查询
-        if (!isAdmin(request)) {
+        if (!userService.isAdmin(request)) {
             throw new BusinessException(ErrorCode.NO_AUTH);
         }
 
@@ -149,17 +171,8 @@ public class UserController {
         return ResultUtils.success(result);
     }
 
-    /**
-     * 是否为管理员
-     *
-     * @param request
-     * @return
-     */
-    private boolean isAdmin(HttpServletRequest request) {
-        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
-        User user = (User) userObj;
-        return user != null && user.getUserRole() == ADMIN_ROLE;
-    }
+
+
 
 
 }

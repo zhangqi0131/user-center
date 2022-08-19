@@ -4,7 +4,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
 /**
- * 星球表哥用户信息
+ * 星球表格用户信息
  * @author zhangqi
  */
 @Data

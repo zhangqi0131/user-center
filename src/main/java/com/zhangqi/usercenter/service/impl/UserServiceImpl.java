@@ -3,24 +3,21 @@ package com.zhangqi.usercenter.service.impl;
 import java.util.*;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import com.zhangqi.usercenter.common.ErrorCode;
+import com.zhangqi.usercenter.constant.UserConstant;
 import com.zhangqi.usercenter.exception.BusinessException;
 import com.zhangqi.usercenter.model.domain.User;
 import com.zhangqi.usercenter.mapper.UserMapper;
 import com.zhangqi.usercenter.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.asm.Advice;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.javassist.bytecode.stackmap.TypeTag;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -220,6 +217,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     /**
      * 根据标签搜索用户 （内存查询）
+     *
      * @param tagNameList
      * @return
      */
@@ -238,7 +236,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             //if (StringUtils.isBlank(tagsStr)) {
             //    return false;
             //}
-            Set<String> tempTagNameSet = gson.fromJson(tagsStr, new TypeToken<Set<String>>(){}.getType());
+            Set<String> tempTagNameSet = gson.fromJson(tagsStr, new TypeToken<Set<String>>() {
+            }.getType());
             tempTagNameSet = Optional.ofNullable(tempTagNameSet).orElse(new HashSet<>());
             for (String tagName : tagNameList) {
                 if (!tempTagNameSet.contains(tagName)) {
@@ -247,6 +246,66 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             }
             return true;
         }).map(this::getSafetyUser).collect(Collectors.toList());
+    }
+
+    @Override
+    public int updateUser(User user, User loginUser) {
+        long userId = user.getId();
+        if (userId <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
+        // 如果用户没有传任何需要改的值，就直接报错
+        if (user.getEmail() == null || user.getUsername() == null || user.getGender() == null || user.getPhone() == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 管理员，可以更新任意用户信息
+        // 不是管理员，只能更新自己的用户信息
+        if (!isAdmin(loginUser) && userId != loginUser.getId()) {
+            throw new BusinessException(ErrorCode.NO_AUTH);
+        }
+        User oldUser = userMapper.selectById(userId);
+        if (oldUser == null) {
+            throw new BusinessException(ErrorCode.NULL_ERROR);
+        }
+        return userMapper.updateById(user);
+    }
+
+    @Override
+    public User getLoginUser(HttpServletRequest request) {
+        if (request == null) {
+            return null;
+        }
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        if (userObj == null) {
+            throw new BusinessException(ErrorCode.NOT_LOGIN);
+        }
+        return (User) userObj;
+    }
+
+
+    /**
+     * 是否为管理员
+     *
+     * @param request
+     * @return
+     */
+    @Override
+    public boolean isAdmin(HttpServletRequest request) {
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        User user = (User) userObj;
+        return user != null && user.getUserRole() == UserConstant.ADMIN_ROLE;
+    }
+
+    /**
+     * 是否为管理员
+     *
+     * @param loginUser
+     * @return
+     */
+    @Override
+    public boolean isAdmin(User loginUser) {
+        return loginUser != null && loginUser.getUserRole() == UserConstant.ADMIN_ROLE;
     }
 }
 
