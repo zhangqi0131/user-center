@@ -1,6 +1,8 @@
 package com.zhangqi.usercenter.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhangqi.usercenter.common.BaseResponse;
 import com.zhangqi.usercenter.common.ErrorCode;
 import com.zhangqi.usercenter.common.ResultUtils;
@@ -125,11 +127,12 @@ public class UserController {
     }
 
     @GetMapping("/recommend")
-    public BaseResponse<List<User>> recommendUsers(String userName, HttpServletRequest request) {
+    public BaseResponse<Page<User>> recommendUsers(long pageSize, long pageNumber, HttpServletRequest request) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        List<User> userList = userService.list(queryWrapper);
-        List<User> list = userList.stream().map(user -> userService.getSafetyUser(user)).collect(Collectors.toList());
-        return ResultUtils.success(list);
+
+        Page<User> userList = userService.page(new Page<>(pageNumber, pageSize), queryWrapper);
+
+        return ResultUtils.success(userList);
     }
 
     @GetMapping("/search/tags")
@@ -170,9 +173,6 @@ public class UserController {
         boolean result = userService.removeById(id);
         return ResultUtils.success(result);
     }
-
-
-
 
 
 }
