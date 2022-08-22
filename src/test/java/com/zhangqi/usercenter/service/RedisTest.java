@@ -28,26 +28,28 @@ public class RedisTest {
     public void test() {
         ValueOperations valueOperations = redisTemplate.opsForValue();
         valueOperations.set("zqString", "cat");
-        //valueOperations.set("zqString1", 1);
-        //valueOperations.set("zqString2", 2.4);
-        //User user = new User();
-        //user.setUsername("zqzqzq");
-        //user.setId(1L);
-        //
-        //valueOperations.set("zqString3", user);
+        valueOperations.set("zqString1", 1);
+        valueOperations.set("zqString2", 2.4);
+        User user = new User();
+        user.setUsername("zqzqzq");
+        user.setId(1L);
+
+        valueOperations.set("zqString3", user);
 
         Object zqString = valueOperations.get("zqString");
         Assertions.assertTrue("cat".equals((String)zqString));
-        //
-        //zqString = valueOperations.get("zqString1");
-        //Assertions.assertTrue(1 == (Integer) zqString);
-        //
-        //
-        //zqString=valueOperations.get("zqString2");
-        //Assertions.assertTrue(2.4 == (Double) zqString);
-        //
-        //zqString=valueOperations.get("zqString3");
-        //System.out.println(zqString);
+
+        zqString = valueOperations.get("zqString1");
+        Assertions.assertTrue(1 == (Integer) zqString);
+
+
+        zqString=valueOperations.get("zqString2");
+        Assertions.assertTrue(2.4 == (Double) zqString);
+
+        zqString=valueOperations.get("zqString3");
+        System.out.println(zqString);
+
+        redisTemplate.delete("zqString");
 
     }
 }
