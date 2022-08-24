@@ -41,7 +41,7 @@ public class InsertUsersTest {
             user.setUserPassword("12345678");
             user.setPhone("123");
             user.setEmail("123");
-            user.setTags("java");
+            user.setTags("[]");
             user.setUserStatus(0);
             user.setUserRole(0);
             user.setPlanetCode("1111");
