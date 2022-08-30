@@ -2,6 +2,7 @@ package com.zhangqi.usercenter.service;
 
 import com.zhangqi.usercenter.model.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhangqi.usercenter.model.request.TeamJoinRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -84,5 +85,7 @@ public interface UserService extends IService<User> {
      * @return
      */
     boolean isAdmin(User loginUser);
+
+
 }
 

@@ -11,6 +11,7 @@ import com.zhangqi.usercenter.constant.UserConstant;
 import com.zhangqi.usercenter.exception.BusinessException;
 import com.zhangqi.usercenter.model.domain.User;
 import com.zhangqi.usercenter.mapper.UserMapper;
+import com.zhangqi.usercenter.model.request.TeamJoinRequest;
 import com.zhangqi.usercenter.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.asm.Advice;
@@ -307,6 +308,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public boolean isAdmin(User loginUser) {
         return loginUser != null && loginUser.getUserRole() == UserConstant.ADMIN_ROLE;
     }
+
+
 }
 
 
