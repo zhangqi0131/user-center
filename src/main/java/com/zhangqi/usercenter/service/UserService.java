@@ -1,14 +1,10 @@
 package com.zhangqi.usercenter.service;
 
-import com.zhangqi.usercenter.model.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zhangqi.usercenter.model.request.TeamJoinRequest;
+import com.zhangqi.usercenter.model.domain.User;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-
-import static com.zhangqi.usercenter.constant.UserConstant.ADMIN_ROLE;
-import static com.zhangqi.usercenter.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
 * @author zhangqi

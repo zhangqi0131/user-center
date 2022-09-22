@@ -4,6 +4,8 @@ import com.zhangqi.usercenter.model.request.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 
 /**
  * @author ZhangQi
@@ -17,6 +19,11 @@ public class TeamQuery extends PageRequest {
      * id
      */
     private Long id;
+
+    /**
+     * idList
+     */
+    private List<Long> idList;
 
     /**
      * 队伍名称
