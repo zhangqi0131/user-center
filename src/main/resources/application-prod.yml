@@ -5,7 +5,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: "jdbc:mysql://sh-cynosdbmysql-grp-hggbjwsy.sql.tencentcdb.com:24056/user?characterEncoding=utf-8&useSSL=true&serverTimezone=UTC"
     username: root
-    password: zhangqi@0131
+    password:
   # session失效时间
   session:
     timeout: 86400
