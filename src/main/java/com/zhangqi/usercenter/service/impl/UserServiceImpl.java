@@ -12,7 +12,9 @@ import com.zhangqi.usercenter.exception.BusinessException;
 import com.zhangqi.usercenter.model.domain.User;
 import com.zhangqi.usercenter.mapper.UserMapper;
 import com.zhangqi.usercenter.model.request.TeamJoinRequest;
+import com.zhangqi.usercenter.model.vo.UserVO;
 import com.zhangqi.usercenter.service.UserService;
+import com.zhangqi.usercenter.utils.AlgorithmUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.asm.Advice;
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +28,7 @@ import javax.servlet.http.HttpSession;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.zhangqi.usercenter.constant.UserConstant.USER_LOGIN_STATE;
 
@@ -307,6 +310,39 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public boolean isAdmin(User loginUser) {
         return loginUser != null && loginUser.getUserRole() == UserConstant.ADMIN_ROLE;
+    }
+
+    @Override
+    public List<User> matchUsers(long num, User loginUser) {
+        List<User> userList = this.list();
+        String tags = loginUser.getTags();
+
+        Gson gson = new Gson();
+        List<String> tagList = gson.fromJson(tags, new TypeToken<List<String>>() {
+        }.getType());
+
+        //用户列表的下标 => 相似度
+        SortedMap<Integer, Long> indexDistanceMap = new TreeMap<>();
+        for (int i = 0; i < userList.size(); i++) {
+            User user = userList.get(i);
+            String userTags = user.getTags();
+            if (StringUtils.isBlank(userTags)) {
+                continue;
+            }
+            List<String> userTagList = gson.fromJson(userTags, new TypeToken<List<String>>() {
+            }.getType());
+
+            long distance = AlgorithmUtils.minDistance(tagList, userTagList);
+            indexDistanceMap.put(i, distance);
+        }
+
+        //拿到相似度最高几条的下标
+        List<Integer> maxDistanceIndexList = indexDistanceMap.keySet().stream().limit(num).collect(Collectors.toList());
+
+        List<User> users = maxDistanceIndexList.stream()
+                .map(index -> getSafetyUser(userList.get(index)))
+                .collect(Collectors.toList());
+        return users;
     }
 
 

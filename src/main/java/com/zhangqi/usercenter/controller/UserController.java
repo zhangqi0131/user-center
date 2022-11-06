@@ -9,6 +9,7 @@ import com.zhangqi.usercenter.exception.BusinessException;
 import com.zhangqi.usercenter.model.domain.User;
 import com.zhangqi.usercenter.model.request.UserLoginRequest;
 import com.zhangqi.usercenter.model.request.UserRegisterRequest;
+import com.zhangqi.usercenter.model.vo.UserVO;
 import com.zhangqi.usercenter.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -131,6 +132,7 @@ public class UserController {
         return ResultUtils.success(list);
     }
 
+    // TODO: 2022/9/22 推荐多个，未实现
     @GetMapping("/recommend")
     public BaseResponse<Page<User>> recommendUsers(long pageSize, long pageNumber, HttpServletRequest request) {
         User loginUser = userService.getLoginUser(request);
@@ -197,6 +199,21 @@ public class UserController {
     }
 
 
+    /**
+     * 匹配用户
+     * @param num
+     * @param request
+     * @return
+     */
+    @GetMapping("/match")
+    public BaseResponse<List<User>> matchUser(long num, HttpServletRequest request) {
+        if (num <= 0 || num > 20) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
+        User user = userService.getLoginUser(request);
+        return ResultUtils.success(userService.matchUsers(num, user));
+    }
 }
 
 
