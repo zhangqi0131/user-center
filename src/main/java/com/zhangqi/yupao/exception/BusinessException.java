@@ -1,6 +1,6 @@
-package com.zhangqi.usercenter.exception;
+package com.zhangqi.yupao.exception;
 
-import com.zhangqi.usercenter.common.ErrorCode;
+import com.zhangqi.yupao.common.ErrorCode;
 
 /**
  * @author ZhangQi

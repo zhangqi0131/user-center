@@ -1,16 +1,12 @@
-package com.zhangqi.usercenter;
+package com.zhangqi.yupao;
 
-import com.zhangqi.usercenter.mapper.UserMapper;
-import com.zhangqi.usercenter.model.domain.User;
+import com.zhangqi.yupao.mapper.UserMapper;
+import com.zhangqi.yupao.model.domain.User;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 

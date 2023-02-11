@@ -1,4 +1,4 @@
-package com.zhangqi.usercenter.common;
+package com.zhangqi.yupao.common;
 
 import lombok.Data;
 

@@ -1,6 +1,4 @@
-package com.zhangqi.usercenter.common;
-
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+package com.zhangqi.yupao.common;
 
 /**
  * @author ZhangQi

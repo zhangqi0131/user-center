@@ -1,4 +1,4 @@
-package com.zhangqi.usercenter;
+package com.zhangqi.yupao;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;

@@ -1,4 +1,4 @@
-package com.zhangqi.usercenter.constant;
+package com.zhangqi.yupao.constant;
 
 /**
  * @author ZhangQi
